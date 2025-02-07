@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yay! 💖</title>
+    <link rel="icon" href="love-png.png" type="image/x-icon"/>
+    <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yay! 💖</title>
+    <style>
+        body {
+            text-align: center;
+            font-family: Arial, sans-serif;
+            background-color: pink;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            padding: 20px;
+        }
+        h1 {
+            color: white;
+            font-size: 2.5em;
+            max-width: 90%;
+        }
+        .gif {
+            width: 250px;
+            height: auto;
+            margin-top: 20px;
+            border-radius: 50%
+        }
+        .emoji {
+            position: absolute;
+            font-size: 2rem;
+            animation: fall 3s linear infinite;
+        }
+        @keyframes fall {
+            from {
+                transform: translateY(-100vh);
+                opacity: 1;
+            }
+            to {
+                transform: translateY(100vh);
+                opacity: 0;
+            }
+        }
+        
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2em;
+            }
+            .gif {
+                width: 200px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.5em;
+            }
+            .gif {
+                width: 150px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>I knew you would say YES! 💖</h1>
+    <img class="gif" src="beruang2.gif" alt="Happy GIF">
+
+    <script>
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.textContent = '💖';
+            heart.classList.add('emoji');
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.animationDuration = Math.random() * 2 + 2 + 's';
+            document.body.appendChild(heart);
+            setTimeout(() => {
+                heart.remove();
+            }, 3000);
+        }
+        setInterval(createHeart, 300);
+    </script>
+</body>
+</html>

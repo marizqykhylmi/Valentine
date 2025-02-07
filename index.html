@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Will You Be My Valentine?</title>
+    <link rel="icon" href="love-png.png" type="image/x-icon"/>
+    <style>
+        body {
+            text-align: center;
+            font-family: Arial, sans-serif;
+            background-color: pink;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        h1 {
+            margin-bottom: 20px;
+        }
+        .gif {
+            width: 400px;
+            height: auto;
+            margin-bottom: 20px;
+            margin-top: 50px;
+            display: flex;
+        }
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+        }
+        .btn {
+            font-size: 20px;
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        #yesBtn {
+            background-color: green;
+            color: white;
+            border: none;
+        }
+        #noBtn {
+            background-color: red;
+            color: white;
+            border: none;
+        }
+
+        @keyframes fall {
+            from {
+                transform: translateY(-100vh);
+                opacity: 1;
+            }
+            to {
+                transform: translateY(100vh);
+                opacity: 0;
+            }
+        }
+        
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2em;
+            }
+            .gif {
+                width: 200px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.5em;
+            }
+            .gif {
+                width: 150px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Will You Be My Valentine?</h1>
+    <div class="container">
+        <button id="yesBtn" class="btn">Iya❤️</button>
+        <button id="noBtn" class="btn">Gak!</button>
+    </div>
+
+    <img id="funGif" class="gif" src="beruang.gif" alt="Beruang GIF">
+    <script>
+        let yesBtn = document.getElementById("yesBtn");
+        let noBtn = document.getElementById("noBtn");
+        let yesSize = 20;
+        let noTexts = ["Masa pilih nggak!", "Serius nih?", "Yang bener aja?!", "Aku bakal sedih tau :3!", "Serius masih gamau!!?"];
+        let noIndex = 0;
+
+        noBtn.addEventListener("click", function() {
+            yesSize += 90;
+            yesBtn.style.fontSize = yesSize + "px";
+            yesBtn.style.padding = yesSize / 2 + "px";
+            
+            if (noIndex < noTexts.length) {
+                noBtn.textContent = noTexts[noIndex];
+                noIndex++;
+            } else {
+                noBtn.style.display = "none";
+            }
+        });
+
+        yesBtn.addEventListener("click", function() {
+            window.location.href = "yes.html";
+        });
+    </script>
+</body>
+</html>
