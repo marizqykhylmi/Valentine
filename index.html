@@ -1,117 +1,184 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Will You Be My Valentine?</title>
-    <link rel="icon" href="love-png.png" type="image/x-icon"/>
-    <style>
-        body {
-            text-align: center;
-            font-family: Arial, sans-serif;
-            background-color: pink;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-        h1 {
-            margin-bottom: 20px;
-        }
-        .gif {
-            width: 400px;
-            height: auto;
-            margin-bottom: 20px;
-            margin-top: 50px;
-            display: flex;
-        }
-        .container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 20px;
-        }
-        .btn {
-            font-size: 20px;
-            padding: 10px 20px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        #yesBtn {
-            background-color: green;
-            color: white;
-            border: none;
-        }
-        #noBtn {
-            background-color: red;
-            color: white;
-            border: none;
-        }
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Will You Be My Valentine?</title>
+  <style>
+    body {
+      text-align: center;
+      font-family: Arial, sans-serif;
+      background-color: pink;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
 
-        @keyframes fall {
-            from {
-                transform: translateY(-100vh);
-                opacity: 1;
-            }
-            to {
-                transform: translateY(100vh);
-                opacity: 0;
-            }
-        }
-        
-        /* Responsive Styles */
-        @media (max-width: 768px) {
-            h1 {
-                font-size: 2em;
-            }
-            .gif {
-                width: 200px;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            h1 {
-                font-size: 1.5em;
-            }
-            .gif {
-                width: 150px;
-            }
-        }
-    </style>
+    h1 { margin-bottom: 20px; }
+
+    .gif {
+      width: 400px;
+      height: auto;
+      margin-bottom: 20px;
+      margin-top: 50px;
+      display: flex;
+    }
+
+    .btn-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 20px;
+      /* area awal untuk tombol agar bersebelahan */
+      width: 100%;
+      pointer-events: auto;
+      z-index: 1;
+    }
+
+    .btn {
+      font-size: 20px;
+      padding: 10px 20px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      /* jangan set position di sini supaya ikut flow awal */
+    }
+
+    #yesBtn {
+      background-color: green;
+      color: white;
+      border: none;
+      position: relative;
+      z-index: 1; /* lebih rendah dari no saat no sudah bergerak */
+    }
+
+    #noBtn {
+      background-color: red;
+      color: white;
+      border: none;
+      position: relative;
+      z-index: 1;
+      transition: left 0.25s ease, top 0.25s ease, transform 0.15s ease;
+    }
+
+    @media (max-width: 768px) {
+      .gif { width: 200px; }
+    }
+    @media (max-width: 480px) {
+      .gif { width: 150px; }
+    }
+  </style>
 </head>
 <body>
-    <h1>Will You Be My Valentine?</h1>
-    <div class="container">
-        <button id="yesBtn" class="btn">Iya❤️</button>
-        <button id="noBtn" class="btn">Gak!</button>
-    </div>
+  <h1>Will You Be My Valentine?</h1>
 
-    <img id="funGif" class="gif" src="beruang.gif" alt="Beruang GIF">
-    <script>
-        let yesBtn = document.getElementById("yesBtn");
-        let noBtn = document.getElementById("noBtn");
-        let yesSize = 20;
-        let noTexts = ["Masa pilih nggak!", "Serius nih?", "Yang bener aja?!", "Aku bakal sedih tau :3!", "Serius masih gamau!!?"];
-        let noIndex = 0;
+  <div class="btn-container">
+    <button id="yesBtn" class="btn">Iya❤️</button>
+    <button id="noBtn" class="btn">Gak!</button>
+  </div>
 
-        noBtn.addEventListener("click", function() {
-            yesSize += 90;
-            yesBtn.style.fontSize = yesSize + "px";
-            yesBtn.style.padding = yesSize / 2 + "px";
-            
-            if (noIndex < noTexts.length) {
-                noBtn.textContent = noTexts[noIndex];
-                noIndex++;
-            } else {
-                noBtn.style.display = "none";
-            }
-        });
+  <img id="funGif" class="gif" src="beruang.gif" alt="Beruang GIF">
 
-        yesBtn.addEventListener("click", function() {
-            window.location.href = "yes.html";
-        });
-    </script>
+  <script>
+    const yesBtn = document.getElementById("yesBtn");
+    const noBtn = document.getElementById("noBtn");
+    let yesSize = 20;
+    const noTexts = [
+      "Masa pilih nggak!",
+      "Serius nih?",
+      "Yang bener aja?!",
+      "Aku bakal sedih tau :3!",
+      "Serius masih gamau!!?"
+    ];
+    let noIndex = 0;
+    let moved = false;
+
+    function rectFromXYWH(x, y, w, h) {
+      return { left: x, top: y, right: x + w, bottom: y + h };
+    }
+
+    function isOverlapping(a, b, padding = 8) {
+      return !(a.right < b.left - padding ||
+               a.left > b.right + padding ||
+               a.bottom < b.top - padding ||
+               a.top > b.bottom + padding);
+    }
+
+    function moveNoRandomlyAvoidingYes() {
+      // ukur ulang setelah perubahan posisi/ukuran
+      const yesRect = yesBtn.getBoundingClientRect();
+
+      // ukur noBtn (lebih aman setelah set posisi fixed)
+      const noW = noBtn.offsetWidth;
+      const noH = noBtn.offsetHeight;
+
+      const maxX = Math.max(0, window.innerWidth - noW);
+      const maxY = Math.max(0, window.innerHeight - noH);
+
+      let attempts = 0;
+      let placed = false;
+      let candX = 0, candY = 0;
+
+      while (attempts < 60 && !placed) {
+        candX = Math.random() * maxX;
+        candY = Math.random() * maxY;
+        const candRect = rectFromXYWH(candX, candY, noW, noH);
+
+        if (!isOverlapping(candRect, yesRect, 10)) {
+          placed = true;
+        }
+        attempts++;
+      }
+
+      if (!placed) {
+        // fallback: coba tempatkan di sisi kanan/bawah yes (pastikan nge-skip overlap)
+        candX = Math.min(maxX, yesRect.right + 20);
+        candY = Math.min(maxY, yesRect.bottom + 20);
+        // kalau masih overlap, coba kiri/atas
+        if (isOverlapping(rectFromXYWH(candX, candY, noW, noH), yesRect, 10)) {
+          candX = Math.max(10, yesRect.left - noW - 20);
+          candY = Math.max(10, yesRect.top - noH - 20);
+        }
+        // final safety clamp
+        candX = Math.max(0, Math.min(candX, maxX));
+        candY = Math.max(0, Math.min(candY, maxY));
+      }
+
+      noBtn.style.left = candX + "px";
+      noBtn.style.top = candY + "px";
+    }
+
+    noBtn.addEventListener("click", function (e) {
+      // Besarkan tombol Yes
+      yesSize += 20;
+      yesBtn.style.fontSize = yesSize + "px";
+      yesBtn.style.padding = (yesSize / 2) + "px";
+
+      // ganti teks No bertahap
+      if (noIndex < noTexts.length) {
+        noBtn.textContent = noTexts[noIndex];
+        noIndex++;
+      }
+
+      // Setelah klik pertama, ubah posisi No jadi fixed (viewport) dan atur z-index tinggi
+      if (!moved) {
+        moved = true;
+        // ubah ke fixed agar koordinat left/top mengacu ke viewport
+        noBtn.style.position = "fixed";
+        noBtn.style.zIndex = "9999";
+        // optional: beri sedikit transform supaya terlihat 'lepasan'
+        noBtn.style.transform = "translateZ(0)";
+      }
+
+      // kemudian pindah ke posisi random yang tidak overlap dengan yes
+      moveNoRandomlyAvoidingYes();
+    });
+
+    yesBtn.addEventListener("click", function () {
+      window.location.href = "yes.html";
+    });
+  </script>
 </body>
 </html>
